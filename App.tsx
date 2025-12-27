@@ -147,7 +147,7 @@ const App: React.FC = () => {
                 <p><strong>Objetivo:</strong> O presente estudo tem como finalidade realizar um diagnóstico detalhado do ecossistema tecnológico da SES-DF, identificando gargalos, potencialidades e o nível de integração das ferramentas digitais na rotina da Atenção Primária.</p>
                 <p><strong>Segurança e Privacidade:</strong> Garantimos que sua participação é estritamente anônima. Os dados coletados são criptografados de ponta a ponta, assegurando que nenhuma resposta possa ser vinculada à sua identidade ou à sua unidade de saúde específica. As informações serão tratadas de forma agregada para fins de análise estatística e científica.</p>
                 <p><strong>Participação:</strong> A sua colaboração é voluntária e você pode interromper o preenchimento a qualquer momento, sem qualquer penalidade. O tempo estimado é de 15 minutos.</p>
-                <p>Ao selecionar a opção "Li e concordo", você declara estar ciente dos objetivos e da proteção dos seus dados, consentindo com a sua utilização para este diagnóstico.</p>
+                <p>Ao selecionar a option "Li e concordo", você declara estar ciente dos objetivos e da proteção dos seus dados, consentindo com a sua utilização para este diagnóstico.</p>
               </div>
               <label className="flex items-center gap-4 p-6 bg-blue-50/50 rounded-2xl cursor-pointer border-2 border-transparent hover:border-blue-200 transition-all group">
                 <input 
@@ -406,7 +406,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="bg-slate-50 p-6 text-center border-t border-slate-100">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Protocolo FEPECS: 2025.08.12 • SES-DF | Versão Residência</p>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">SES-DF - FEPECS - ESPDF - Programa de Residencia Multiprofissional em Gestão de Políticas Públicas para a Saúde</p>
         </div>
       </div>
     </div>
