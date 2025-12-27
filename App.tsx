@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { 
   ShieldCheck, User, Monitor, Activity, 
   AlertTriangle, CheckCircle, ChevronRight, ChevronLeft, Save, 
-  Wifi, BarChart3, Zap, LayoutGrid, FileText, GraduationCap, Briefcase, Calendar, Users
+  Wifi, BarChart3, LayoutGrid, FileText
 } from 'lucide-react';
 import { Step, SurveyState, ProfileData } from './types';
 import { 
@@ -20,7 +19,6 @@ import {
   PC_OPCOES,
   PC_SUFICIENCIA_OPCOES
 } from './constants';
-import { analyzeSurveyRoutine } from './services/geminiService';
 import { supabase } from './supabaseClient';
 
 const App: React.FC = () => {
@@ -48,8 +46,7 @@ const App: React.FC = () => {
     sugestoes: ''
   });
 
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [insight, setInsight] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const next = () => { window.scrollTo(0,0); setState(s => ({ ...s, step: s.step + 1 })); };
   const back = () => { window.scrollTo(0,0); setState(s => ({ ...s, step: s.step - 1 })); };
@@ -68,13 +65,9 @@ const App: React.FC = () => {
   };
 
   const handleFinish = async () => {
-    setIsAnalyzing(true);
+    setIsSubmitting(true);
     try {
-      // 1. Gerar Insight da IA
-      const aiInsight = await analyzeSurveyRoutine(state);
-      setInsight(aiInsight);
-
-      // 2. Salvar no Supabase
+      // Salvar no Supabase
       const { error } = await supabase.from('surveys').insert([{
         idade: state.profile.idade,
         sexo: state.profile.sexo,
@@ -92,18 +85,16 @@ const App: React.FC = () => {
         evaluations: state.evaluations,
         produtividade: state.produtividade,
         barreiras: state.barreiras,
-        sugestoes: state.sugestoes,
-        ai_insight: aiInsight
+        sugestoes: state.sugestoes
       }]);
 
       if (error) throw error;
-
+      next();
     } catch (err) {
       console.error("Erro ao finalizar:", err);
       alert("Houve um erro ao salvar seus dados. Por favor, tente novamente.");
     } finally {
-      setIsAnalyzing(false);
-      next();
+      setIsSubmitting(false);
     }
   };
 
@@ -393,11 +384,11 @@ const App: React.FC = () => {
                 <FileText size={32} strokeWidth={2.5} />
                 <h2 className="text-2xl font-black">Finalizar</h2>
               </div>
-              <p className="text-slate-600 text-center font-medium">Ao clicar em submeter, suas respostas serão salvas com segurança no banco de dados da pesquisa e analisadas por nossa IA para gerar um diagnóstico preliminar.</p>
+              <p className="text-slate-600 text-center font-medium">Ao clicar em submeter, suas respostas serão salvas com segurança no banco de dados da pesquisa oficial da SES-DF.</p>
               <div className="flex gap-4">
                 <button onClick={back} className="flex-1 py-5 border-2 border-slate-200 text-slate-500 rounded-2xl font-bold hover:bg-slate-50 flex justify-center items-center gap-2"><ChevronLeft size={20}/> Ajustar</button>
-                <button onClick={handleFinish} disabled={isAnalyzing} className="flex-[2] py-5 bg-indigo-600 text-white rounded-2xl font-bold shadow-xl hover:bg-indigo-700 transition-all flex justify-center items-center gap-3">
-                  {isAnalyzing ? 'Salvando e Analisando...' : 'Submeter Respostas'} <Save size={22} />
+                <button onClick={handleFinish} disabled={isSubmitting} className="flex-[2] py-5 bg-indigo-600 text-white rounded-2xl font-bold shadow-xl hover:bg-indigo-700 transition-all flex justify-center items-center gap-3">
+                  {isSubmitting ? 'Salvando...' : 'Submeter Respostas'} <Save size={22} />
                 </button>
               </div>
             </div>
@@ -407,12 +398,7 @@ const App: React.FC = () => {
             <div className="text-center space-y-8 animate-in zoom-in duration-700 py-10">
               <div className="flex justify-center"><CheckCircle size={80} className="text-green-500" /></div>
               <h2 className="text-4xl font-black text-slate-800">Sucesso!</h2>
-              {insight && (
-                <div className="max-w-xl mx-auto p-8 bg-blue-50 border border-blue-100 rounded-[2.5rem] text-left space-y-4">
-                   <h4 className="flex items-center gap-2 font-black text-blue-900 uppercase tracking-widest text-xs"> <Zap size={20} className="text-blue-600" /> Insight Estratégico: </h4>
-                   <p className="text-blue-800 italic leading-relaxed font-medium"> "{insight}" </p>
-                </div>
-              )}
+              <p className="text-slate-600 font-medium max-w-md mx-auto">Suas respostas foram recebidas e registradas com sucesso no banco de dados da pesquisa. Obrigado por contribuir para o diagnóstico digital da APS no DF.</p>
               <button onClick={() => window.location.reload()} className="inline-flex py-4 px-12 bg-slate-800 text-white rounded-2xl font-bold items-center gap-2"> Novo Diagnóstico </button>
             </div>
           )}
